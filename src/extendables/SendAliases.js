@@ -1,36 +1,32 @@
 const { Extendable } = require('klasa');
-const { TextChannel, DMChannel, User, APIMessage } = require('discord.js');
+const { TextChannel, DMChannel, User } = require('discord.js');
 
 module.exports = class extends Extendable {
 
-	constructor(...args) {
-		super(...args, { appliesTo: [TextChannel, DMChannel, User] });
-	}
+    constructor(...args) {
+        super(...args, { appliesTo: [TextChannel, DMChannel, User] });
+    }
 
-	sendCode(code, content, options = {}) {
-		return this.send(APIMessage.transformOptions(content, options, { code }));
-	}
+    sendCode(code, content, options) {
+        content = `\`\`\`${code}\n${content}\n\`\`\``
+		return this.send({ content, ...options });
+    }
 
-	sendEmbed(embed, content, options = {}) {
-		return this.send(APIMessage.transformOptions(content, options, { embed }));
-	}
+    sendEmbed(embed, content, options) {
+		return this.send({ embed, content, ...options });
+    }
 
-	sendFile(attachment, name, content, options = {}) {
-		return this.send(APIMessage.transformOptions(content, options, { files: [{ attachment, name }] }));
-	}
+    sendFile(attachment, name, content, options = {}) {    
+        return this.send({ content, options , files: [{ attachment, name }] });
+    }
 
-	sendFiles(files, content, options = {}) {
-		return this.send(APIMessage.transformOptions(content, options, { files }));
-	}
+    sendLocale(key, localeArgs = [], options = {}) {
+        if (!Array.isArray(localeArgs)) [options, localeArgs] = [localeArgs, []];
+        return this.send(this.language.get(key, ...localeArgs), options);
+    }
 
-	sendLocale(key, args = [], options = {}) {
-		if (!Array.isArray(args)) [options, args] = [args, []];
-		const language = this.guild ? this.guild.language : this.client.languages.default;
-		return this.send(APIMessage.transformOptions(language.get(key, ...args), undefined, options));
-	}
-
-	sendMessage(content, options) {
-		return this.send(content, options);
-	}
+    sendMessage(content, options) {
+        return this.send({ content, ...options });
+    }
 
 };

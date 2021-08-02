@@ -1,12 +1,11 @@
-const { Structures } = require('discord.js');
+const { Client } = require('@aero/discord.js-proxy');
 
-module.exports = Structures.extend('Guild', Guild => {
+module.exports = Client.extend('Guild', (Guild) => {
 	/**
 	 * Klasa's Extended Guild
 	 * @extends external:Guild
 	 */
 	class KlasaGuild extends Guild {
-
 		/**
 		 * @typedef {external:GuildJSON} KlasaGuildJSON
 		 * @property {SettingsJSON} settings The per guild settings
@@ -42,7 +41,6 @@ module.exports = Structures.extend('Guild', Guild => {
 		toJSON() {
 			return { ...super.toJSON(), settings: this.settings.toJSON() };
 		}
-
 	}
 
 	return KlasaGuild;

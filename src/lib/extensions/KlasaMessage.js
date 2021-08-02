@@ -1,7 +1,8 @@
-const { Structures, Collection, APIMessage, Permissions: { FLAGS } } = require('discord.js');
+const { Collection, MessagePayload, Permissions: { FLAGS } } = require('discord.js');
 const { regExpEsc } = require('../util/util');
+const { Client } = require('@aero/discord.js-proxy');
 
-module.exports = Structures.extend('Message', Message => {
+module.exports = Client.extend('Message', Message => {
 	/**
 	 * Klasa's Extended Message
 	 * @extends external:Message
@@ -73,6 +74,10 @@ module.exports = Structures.extend('Message', Message => {
 		 */
 		get responses() {
 			return this._responses.filter(msg => !msg.deleted);
+		}
+
+		get edited() {
+			return Boolean(this.editedTimestamp);
 		}
 
 		/**
@@ -161,36 +166,34 @@ module.exports = Structures.extend('Message', Message => {
 		 * @param {external:MessageOptions} [options] The D.JS message options
 		 * @returns {KlasaMessage|KlasaMessage[]}
 		 */
-		async sendMessage(content, options) {
-			const combinedOptions = APIMessage.transformOptions(content, options);
+		 async sendMessage(content, options) {
+			const combinedOptions = { content, ...options };
 
 			if ('files' in combinedOptions) return this.channel.send(combinedOptions);
 
-			const newMessages = new APIMessage(this.channel, combinedOptions).resolveData().split()
-				.map(mes => {
-					// Command editing should always remove embeds and content if none is provided
-					mes.data.embed = mes.data.embed || null;
-					mes.data.content = mes.data.content || null;
-					return mes;
-				});
+			const newMessage = new MessagePayload(this.channel, combinedOptions)
+				.resolveData();
+
+			newMessage.data.embed = newMessage.data.embed || null;
+			newMessage.data.content = newMessage.data.content || null;
 
 			const { responses } = this;
 			const promises = [];
-			const max = Math.max(newMessages.length, responses.length);
 
-			for (let i = 0; i < max; i++) {
-				if (i >= newMessages.length) responses[i].delete();
-				else if (responses.length > i) promises.push(responses[i].edit(newMessages[i]));
-				else promises.push(this.channel.send(newMessages[i]));
+			for (let i = 0; i < responses.length; i++) {
+				if (i >= 1) responses[i].delete();
+				else if (responses.length > i) promises.push(responses[i].edit(newMessage));
+				else promises.push(this.channel.send(newMessage));
 			}
 
 			const newResponses = await Promise.all(promises);
 
 			// Can't store the clones because deleted will never be true
-			this._responses = newMessages.map((val, i) => responses[i] || newResponses[i]);
+			this._responses = [newMessage];
 
 			return newResponses.length === 1 ? newResponses[0] : newResponses;
 		}
+
 
 		/**
 		 * Sends an embed message that will be editable via command editing (if nothing is attached)
@@ -201,7 +204,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
 		sendEmbed(embed, content, options) {
-			return this.sendMessage(APIMessage.transformOptions(content, options, { embed }));
+			return this.sendMessage(content, { embed, ...options });
 		}
 
 		/**
@@ -213,7 +216,8 @@ module.exports = Structures.extend('Message', Message => {
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
 		sendCode(code, content, options) {
-			return this.sendMessage(APIMessage.transformOptions(content, options, { code }));
+			content = `\`\`\`${code}\n${content}\n\`\`\``
+			return this.sendMessage(content, options);
 		}
 
 		/**
@@ -223,8 +227,8 @@ module.exports = Structures.extend('Message', Message => {
 		 * @param {external:MessageOptions} [options] The D.JS message options
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
-		send(content, options) {
-			return this.sendMessage(content, options);
+		send(content, options, embeds) {
+			return this.sendMessage(options, content, embeds);
 		}
 
 		/**
@@ -237,7 +241,7 @@ module.exports = Structures.extend('Message', Message => {
 		 */
 		sendLocale(key, localeArgs = [], options = {}) {
 			if (!Array.isArray(localeArgs)) [options, localeArgs] = [localeArgs, []];
-			return this.sendMessage(APIMessage.transformOptions(this.language.get(key, ...localeArgs), undefined, options));
+            return this.sendMessage(this.language.get(key, ...localeArgs), options);
 		}
 
 		/**
