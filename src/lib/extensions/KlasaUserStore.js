@@ -1,24 +1,21 @@
-const { Client } = require('@aero/discord.js-proxy');
+const { UserManager  } = require('discord.js');
 
-module.exports = Client.extend('UserManager', UserManager => {
+/**
+ * Contains extensions to the base UserStore class
+ * @extends external:UserManager 
+ */
+class KlasaUserStore extends UserManager  {
+
 	/**
-	 * Contains extensions to the base UserStore class
-	 * @extends external:UserManager
+	 * Fetches a user and syncs their settings
+	 * @param  {...any} args d.js UserStore#fetch arguments
 	 */
-
-	class KlasaUserManager extends UserManager {
-
-		/**
-		 * Fetches a user and syncs their settings
-		 * @param  {...any} args d.js UserStore#fetch arguments
-		 */
-		async fetch(...args) {
-			const user = await super.fetch(...args);
-			await user.settings.sync();
-			return user;
-		}
-
+	async fetch(...args) {
+		const user = await super.fetch(...args);
+		await user.settings.sync();
+		return user;
 	}
 
-	return KlasaUserManager;
-});
+}
+
+module.exports = KlasaUserStore;

@@ -1,5 +1,5 @@
-const { Collection, Permissions, Permissions: { FLAGS } } = require('discord.js');
-const { Client } = require('@aero/discord.js-proxy');
+const Discord = require('discord.js');
+const { Permissions, Permissions: { FLAGS } } = Discord;
 const path = require('path');
 
 // lib/permissions
@@ -19,6 +19,9 @@ const LanguageStore = require('./structures/LanguageStore');
 const MonitorStore = require('./structures/MonitorStore');
 const TaskStore = require('./structures/TaskStore');
 
+// lib/extensions
+const KlasaUserStore = require('./extensions/KlasaUserStore');
+
 // lib/util
 const KlasaConsole = require('./util/KlasaConsole');
 const { DEFAULTS, MENTION_REGEX } = require('./util/constants');
@@ -33,7 +36,7 @@ const plugins = new Set();
  * @extends external:Client
  * @tutorial GettingStarted
  */
-class KlasaClient extends Client {
+class KlasaClient extends Discord.Client {
 
 	/**
 	 * Defaulted as `Successfully initialized. Ready to serve ${this.guilds.size} guilds.`
@@ -147,6 +150,13 @@ class KlasaClient extends Client {
 		 */
 
 		/**
+		 * The KlasaUser cache
+		 * @since 0.5.0
+		 * @type {KlasaUserStore}
+		 */
+		this.users = new KlasaUserStore(this);
+
+		/**
 		 * The directory where the user files are at
 		 * @since 0.0.1
 		 * @type {string}
@@ -242,7 +252,7 @@ class KlasaClient extends Client {
 		 * @since 0.3.0
 		 * @type {external:Collection}
 		 */
-		this.pieceStores = new Collection();
+		this.pieceStores = new Discord.Collection();
 
 		/**
 		 * The permissions structure for this bot
@@ -315,6 +325,17 @@ class KlasaClient extends Client {
 	}
 
 	/**
+	 * The invite link for the bot
+	 * @since 0.0.1
+	 * @type {string}
+	 * @readonly
+	 */
+	get invite() {
+		const permissions = new Permissions(this.constructor.basePermissions).add(...this.commands.map(command => command.requiredPermissions)).bitfield;
+		return `https://discordapp.com/oauth2/authorize?client_id=${this.application.id}&permissions=${permissions}&scope=bot`;
+	}
+
+	/**
 	 * The owners for this bot
 	 * @since 0.5.0
 	 * @type {Set<KlasaUser>}
@@ -327,6 +348,17 @@ class KlasaClient extends Client {
 			if (user) owners.add(user);
 		}
 		return owners;
+	}
+
+	/**
+	 * Obtains the OAuth Application of the bot from Discord.
+	 * When ran, this function will update {@link KlasaClient#application}.
+	 * @since 0.0.1
+	 * @returns {external:ClientApplication}
+	 */
+	async fetchApplication() {
+		this.application = await super.fetchApplication();
+		return this.application;
 	}
 
 	/**
@@ -429,36 +461,6 @@ class KlasaClient extends Client {
 		return messages;
 	}
 
-	setInterval(...args) {
-		const timeout = setInterval(...args);
-		timeout.unref();
-		return timeout;
-		}
-	   
-		setTimeout(...args) {
-		const timeout = setTimeout(...args);
-		timeout.unref();
-		return timeout;
-		}
-	   
-		setImmediate(...args) {
-		const immediate = setImmediate(...args);
-		immediate.unref();
-		return immediate;
-		}
-	   
-		clearInterval(...args) {
-		return clearInterval(...args);
-		}
-	   
-		clearTimeout(...args) {
-		return clearTimeout(...args);
-		}
-	   
-		clearImmediate(...args) {
-		return clearImmediate(...args);
-		}	   
-
 	/**
 	 * Caches a plugin module to be used when creating a KlasaClient instance
 	 * @since 0.5.0
@@ -523,7 +525,7 @@ KlasaClient.plugin = Symbol('KlasaPlugin');
  * @since 0.5.0
  * @type {Permissions}
  */
-KlasaClient.basePermissions = new Permissions(3072n);
+KlasaClient.basePermissions = new Permissions(3072);
 
 /**
  * The default PermissionLevels

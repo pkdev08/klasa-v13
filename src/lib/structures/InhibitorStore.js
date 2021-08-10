@@ -29,7 +29,7 @@ class InhibitorStore extends Store {
 		for (const inhibitor of this.values()) if (inhibitor.enabled && (!selective || !inhibitor.spamProtection)) mps.push(inhibitor._run(message, command));
 		const results = (await Promise.all(mps)).filter(res => res);
 		if (results.includes(true)) throw undefined;
-		if (results.length) throw results.join('\n');
+		if (results.length) throw results;
 		return undefined;
 	}
 

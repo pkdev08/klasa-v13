@@ -1,11 +1,12 @@
-const { Client } = require('@aero/discord.js-proxy');
+const { Structures } = require('discord.js');
 
-module.exports = Client.extend('User', (User) => {
+module.exports = Structures.extend('User', User => {
 	/**
 	 * Klasa's Extended User
 	 * @extends external:User
 	 */
 	class KlasaUser extends User {
+
 		/**
 		 * @typedef {external:UserJSON} KlasaUserJSON
 		 * @property {SettingsJSON} settings The per user settings
@@ -33,6 +34,7 @@ module.exports = Client.extend('User', (User) => {
 		toJSON() {
 			return { ...super.toJSON(), settings: this.settings.toJSON() };
 		}
+
 	}
 
 	return KlasaUser;
