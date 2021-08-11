@@ -75,10 +75,6 @@ module.exports = Structures.extend('Message', Message => {
 			return this._responses.filter(msg => !msg.deleted);
 		}
 
-		get edited() {
-			return Boolean(this.editedTimestamp);
-		}
-		   
 		/**
 		 * The string arguments derived from the usageDelim of the command
 		 * @since 0.0.1
@@ -166,7 +162,7 @@ module.exports = Structures.extend('Message', Message => {
 		 * @returns {KlasaMessage|KlasaMessage[]}
 		 */
 		async sendMessage(content, options) {
-			const combinedOptions = APIMessage.transformOptions(content, options);
+			const combinedOptions = { content, ...options };
 
 			if ('files' in combinedOptions) return this.channel.send(combinedOptions);
 
@@ -204,9 +200,9 @@ module.exports = Structures.extend('Message', Message => {
 		 * @param {external:MessageOptions} [options] The D.JS message options
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
-		sendEmbed(embed, content, options) {
-			return this.sendMessage(APIMessage.transformOptions(content, options, { embed }));
-		}
+		 sendEmbed(embeds, content, options) {
+            return this.sendMessage(content, { ...options, ...embeds });
+       }
 
 		/**
 		 * Sends a codeblock message that will be editable via command editing (if nothing is attached)
@@ -217,8 +213,8 @@ module.exports = Structures.extend('Message', Message => {
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
 		sendCode(code, content, options) {
-			return this.sendMessage(APIMessage.transformOptions(content, options, { code }));
-		}
+            return this.channel.send({ ...options, content, code });
+        }
 
 		/**
 		 * Sends a message that will be editable via command editing (if nothing is attached)
@@ -227,9 +223,9 @@ module.exports = Structures.extend('Message', Message => {
 		 * @param {external:MessageOptions} [options] The D.JS message options
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
-		send(content, options) {
-			return this.sendMessage(content, options);
-		}
+		send(options, content, embeds) {
+            return this.sendMessage(options, content, embeds);
+        }
 
 		/**
 		 * Sends a message that will be editable via command editing (if nothing is attached)
@@ -240,9 +236,9 @@ module.exports = Structures.extend('Message', Message => {
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
 		sendLocale(key, localeArgs = [], options = {}) {
-			if (!Array.isArray(localeArgs)) [options, localeArgs] = [localeArgs, []];
-			return this.sendMessage(APIMessage.transformOptions(this.language.get(key, ...localeArgs), undefined, options));
-		}
+            if (!Array.isArray(localeArgs)) [options, localeArgs] = [localeArgs, []];
+            return this.sendMessage(this.language.get(key, ...localeArgs), options);
+        }
 
 		/**
 		 * Since d.js is dumb and has 2 patch methods, this is for edits
