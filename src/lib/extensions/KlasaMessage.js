@@ -75,6 +75,10 @@ module.exports = Structures.extend('Message', Message => {
 			return this._responses.filter(msg => !msg.deleted);
 		}
 
+		get edited() {
+			return Boolean(this.editedTimestamp);
+		}
+		   
 		/**
 		 * The string arguments derived from the usageDelim of the command
 		 * @since 0.0.1

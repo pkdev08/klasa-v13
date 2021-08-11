@@ -325,17 +325,6 @@ class KlasaClient extends Discord.Client {
 	}
 
 	/**
-	 * The invite link for the bot
-	 * @since 0.0.1
-	 * @type {string}
-	 * @readonly
-	 */
-	get invite() {
-		const permissions = new Permissions(this.constructor.basePermissions).add(...this.commands.map(command => command.requiredPermissions)).bitfield;
-		return `https://discordapp.com/oauth2/authorize?client_id=${this.application.id}&permissions=${permissions}&scope=bot`;
-	}
-
-	/**
 	 * The owners for this bot
 	 * @since 0.5.0
 	 * @type {Set<KlasaUser>}
@@ -348,17 +337,6 @@ class KlasaClient extends Discord.Client {
 			if (user) owners.add(user);
 		}
 		return owners;
-	}
-
-	/**
-	 * Obtains the OAuth Application of the bot from Discord.
-	 * When ran, this function will update {@link KlasaClient#application}.
-	 * @since 0.0.1
-	 * @returns {external:ClientApplication}
-	 */
-	async fetchApplication() {
-		this.application = await super.fetchApplication();
-		return this.application;
 	}
 
 	/**
@@ -525,7 +503,7 @@ KlasaClient.plugin = Symbol('KlasaPlugin');
  * @since 0.5.0
  * @type {Permissions}
  */
-KlasaClient.basePermissions = new Permissions(3072);
+KlasaClient.basePermissions = new Permissions(['VIEW_CHANNEL', 'SEND_MESSAGES']);
 
 /**
  * The default PermissionLevels
