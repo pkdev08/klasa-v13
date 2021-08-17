@@ -197,11 +197,11 @@ class TextPrompt {
 		this._prompted++;
 		if (this.typing) this.message.channel.stopTyping();
 		const possibleAbortOptions = this.message.language.get('TEXT_PROMPT_ABORT_OPTIONS');
-		const edits = this.message.edits.length;
+		const edits = this.message.editedTimestamp;
 		const message = await this.prompt(
 			this.message.language.get('MONITOR_COMMAND_HANDLER_REPROMPT', `<@!${this.target.id}>`, prompt, this.time / 1000, possibleAbortOptions)
 		);
-		if (this.message.edits.length !== edits || message.prefix || possibleAbortOptions.includes(message.content.toLowerCase())) throw this.message.language.get('MONITOR_COMMAND_HANDLER_ABORTED');
+		if (this.message.editedTimestamp !== edits || message.prefix || possibleAbortOptions.includes(message.content.toLowerCase())) throw this.message.language.get('MONITOR_COMMAND_HANDLER_ABORTED');
 
 		this.responses.set(message.id, message);
 
