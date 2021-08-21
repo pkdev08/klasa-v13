@@ -8,6 +8,7 @@ module.exports = class extends Event {
 	}
 
 	run(settings, updateObject) {
+		if (!this.client.shard) return;
 		if (gateways.includes(settings.gateway.name)) {
 			this.client.shard.broadcastEval(`
 				if (String(this.options.shards) !== '${this.client.options.shards}') {
