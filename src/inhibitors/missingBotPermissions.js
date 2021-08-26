@@ -17,7 +17,7 @@ module.exports = class extends Inhibitor {
 	}
 
 	run(message, command) {
-		const missing = message.channel.type === 'text' ?
+		const missing = message.channel.type === 'GUILD_TEXT' ?
 			message.channel.permissionsFor(this.client.user).missing(command.requiredPermissions, false) :
 			this.impliedPermissions.missing(command.requiredPermissions, false);
 

@@ -1,4 +1,4 @@
-const { Structures, Collection, APIMessage, Permissions: { FLAGS } } = require('discord.js');
+const { Structures, Collection, MessagePayload, Permissions: { FLAGS } } = require('discord.js');
 const { regExpEsc } = require('../util/util');
 
 module.exports = Structures.extend('Message', Message => {
@@ -166,7 +166,7 @@ module.exports = Structures.extend('Message', Message => {
 
 			if ('files' in combinedOptions) return this.channel.send(combinedOptions);
 
-			const newMessages = new APIMessage(this.channel, combinedOptions).resolveData().split()
+			const newMessages = new MessagePayload(this.channel, combinedOptions).resolveData().split()
 				.map(mes => {
 					// Command editing should always remove embeds and content if none is provided
 					mes.data.embed = mes.data.embed || null;

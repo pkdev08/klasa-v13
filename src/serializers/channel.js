@@ -10,9 +10,9 @@ module.exports = class extends Serializer {
 	checkChannel(data, entry, language) {
 		if (
 			entry.type === 'channel' ||
-			(entry.type === 'textchannel' && data.type === 'text') ||
-			(entry.type === 'voicechannel' && data.type === 'voice') ||
-			(entry.type === 'categorychannel' && data.type === 'category')
+			(entry.type === 'textchannel' && data.type === 'GUILD_TEXT') ||
+			(entry.type === 'voicechannel' && data.type === 'GUILD_VOICE') ||
+			(entry.type === 'categorychannel' && data.type === 'GUILD_CATEGORY')
 		) return data;
 		throw language.get('RESOLVER_INVALID_CHANNEL', entry.key);
 	}

@@ -439,6 +439,36 @@ class KlasaClient extends Discord.Client {
 		return messages;
 	}
 
+	setInterval(...args) {
+		const timeout = setInterval(...args);
+		timeout.unref();
+		return timeout;
+	}
+
+	setTimeout(...args) {
+		const timeout = setTimeout(...args);
+		timeout.unref();
+		return timeout;
+	}
+
+	setImmediate(...args) {
+		const immediate = setImmediate(...args);
+		immediate.unref();
+		return immediate;
+	}
+
+	clearInterval(...args) {
+		return clearInterval(...args);
+	}
+
+	clearTimeout(...args) {
+		return clearTimeout(...args);
+	}
+
+	clearImmediate(...args) {
+		return clearImmediate(...args);
+	}
+
 	/**
 	 * Caches a plugin module to be used when creating a KlasaClient instance
 	 * @since 0.5.0

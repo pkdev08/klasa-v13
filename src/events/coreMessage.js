@@ -3,7 +3,7 @@ const { Event } = require('klasa');
 module.exports = class extends Event {
 
 	constructor(...args) {
-		super(...args, { event: 'message' });
+		super(...args, { event: 'messageCreate' });
 	}
 
 	run(message) {

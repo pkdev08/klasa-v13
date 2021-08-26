@@ -5,7 +5,7 @@ declare module 'klasa' {
 	import { ExecOptions } from 'child_process';
 
 	import {
-		APIMessage,
+		MessagePayload,
 		Channel,
 		Client,
 		ClientOptions,
@@ -521,7 +521,7 @@ declare module 'klasa' {
 		private _prompted: number;
 		private _currentUsage: Tag;
 
-		public run<T = any[]>(prompt: StringResolvable | MessageOptions | MessageAdditions | APIMessage): Promise<T>;
+		public run<T = any[]>(prompt: StringResolvable | MessageOptions | MessageAdditions | MessagePayload): Promise<T>;
 		private prompt(text: string): Promise<KlasaMessage>;
 		private reprompt(prompt: string): Promise<any[]>;
 		private repeatingPrompt(): Promise<any[]>;
@@ -1026,7 +1026,7 @@ declare module 'klasa' {
 		promptTime?: number;
 		quotedStringSupport?: boolean;
 		requiredSettings?: string[];
-		runIn?: Array<'text' | 'dm'>;
+		runIn?: Array<'GUILD_TEXT' | 'DM'>;
 		subcommands?: boolean;
 		usage?: string;
 		usageDelim?: string;
@@ -1479,11 +1479,11 @@ declare module 'klasa' {
 			send(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<KlasaMessage>;
 			send(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<KlasaMessage>;
 			send(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<KlasaMessage[]>;
-			send(options?: MessageOptions | MessageAdditions | APIMessage): Promise<KlasaMessage>;
-			send(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<KlasaMessage>;
-			send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<KlasaMessage[]>;
+			send(options?: MessageOptions | MessageAdditions | MessagePayload): Promise<KlasaMessage>;
+			send(options?: MessageOptions & { split?: false } | MessageAdditions | MessagePayload): Promise<KlasaMessage>;
+			send(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | MessagePayload): Promise<KlasaMessage[]>;
 			edit(content: StringResolvable, options?: MessageEditOptions | MessageEmbed): Promise<KlasaMessage>;
-			edit(options: MessageEditOptions | MessageEmbed | APIMessage): Promise<KlasaMessage>;
+			edit(options: MessageEditOptions | MessageEmbed | MessagePayload): Promise<KlasaMessage>;
 			usableCommands(): Promise<Collection<string, Command>>;
 			hasAtLeastPermissionLevel(min: number): Promise<boolean>;
 		}
@@ -1506,9 +1506,9 @@ declare module 'klasa' {
 			sendMessage(content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<KlasaMessage>;
 			sendMessage(content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<KlasaMessage>;
 			sendMessage(content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<KlasaMessage[]>;
-			sendMessage(options?: MessageOptions | MessageAdditions | APIMessage): Promise<KlasaMessage>;
-			sendMessage(options?: MessageOptions & { split?: false } | MessageAdditions | APIMessage): Promise<KlasaMessage>;
-			sendMessage(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | APIMessage): Promise<KlasaMessage[]>;
+			sendMessage(options?: MessageOptions | MessageAdditions | MessagePayload): Promise<KlasaMessage>;
+			sendMessage(options?: MessageOptions & { split?: false } | MessageAdditions | MessagePayload): Promise<KlasaMessage>;
+			sendMessage(options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions | MessagePayload): Promise<KlasaMessage[]>;
 			sendEmbed(embed: MessageEmbed, content?: StringResolvable, options?: MessageOptions | MessageAdditions): Promise<KlasaMessage>;
 			sendEmbed(embed: MessageEmbed, content?: StringResolvable, options?: MessageOptions & { split?: false } | MessageAdditions): Promise<KlasaMessage>;
 			sendEmbed(embed: MessageEmbed, content?: StringResolvable, options?: MessageOptions & { split: true | SplitOptions } | MessageAdditions): Promise<KlasaMessage[]>;

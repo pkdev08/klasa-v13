@@ -162,7 +162,7 @@ class TextPrompt {
 	/**
 	 * Runs the custom prompt.
 	 * @since 0.5.0
-	 * @param {StringResolvable | MessageOptions | MessageAdditions | APIMessage} prompt The message to initially prompt with
+	 * @param {StringResolvable | MessageOptions | MessageAdditions | MessagePayload} prompt The message to initially prompt with
 	 * @returns {any[]} The parameters resolved
 	 */
 	async run(prompt) {
@@ -174,7 +174,7 @@ class TextPrompt {
 
 	/**
 	 * Prompts the target for a response
-	 * @param {StringResolvable | MessageOptions | MessageAdditions | APIMessage} text The text to prompt
+	 * @param {StringResolvable | MessageOptions | MessageAdditions | MessagePayload} text The text to prompt
 	 * @returns {KlasaMessage}
 	 * @private
 	 */
