@@ -1,4 +1,4 @@
-const { getPromiseDetails } = process.binding('util');
+const { getPromiseDetails } = require('@sapphire/type');
 
 /**
  * The class for deep checking Types
