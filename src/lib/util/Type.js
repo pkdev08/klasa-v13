@@ -1,4 +1,5 @@
-const { getPromiseDetails } = require('@sapphire/type');
+const { internalBinding } = require('internal/test/binding');
+const { getPromiseDetails } = internalBinding('util');
 
 /**
  * The class for deep checking Types
