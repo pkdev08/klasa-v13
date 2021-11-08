@@ -1,4 +1,4 @@
-const { Structures, Collection, MessagePayload, Permissions: { FLAGS } } = require('discord.js');
+const { Structures, Collection, Formatters, MessagePayload, Permissions: { FLAGS } } = require('discord.js');
 const { regExpEsc } = require('../util/util');
 
 module.exports = Structures.extend('Message', Message => {
@@ -213,8 +213,11 @@ module.exports = Structures.extend('Message', Message => {
 		 * @returns {Promise<KlasaMessage|KlasaMessage[]>}
 		 */
 		sendCode(code, content, options) {
-            return this.channel.send({ ...options, content, code });
-        }
+			return this.channel.send({
+			  content: Formatters.codeBlock(code, content),
+			  ...options
+			});
+		  }
 
 		/**
 		 * Sends a message that will be editable via command editing (if nothing is attached)
