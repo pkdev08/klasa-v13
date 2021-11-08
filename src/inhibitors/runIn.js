@@ -1,9 +1,9 @@
 const { Inhibitor } = require('klasa');
 const friendlyrunIn = {
-	GUILD_TEXT: "Guild Text",
-	GUILD_NEWS: 'Guild News',
-	DM: 'DM',
-	GUILD_ANY: 'Guild Any
+	GUILD_TEXT: "text",
+	GUILD_NEWS: 'news',
+	DM: 'dm',
+	GUILD_ANY: 'server'
 }
 
 module.exports = class extends Inhibitor {
