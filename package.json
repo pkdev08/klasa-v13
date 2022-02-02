@@ -24,9 +24,6 @@
     "@klasa/settings-gateway": "^0.0.10",
     "fs-nextra": "^0.4.5"
   },
-  "peerDependencies": {
-    "discord.js": "github:pkdev08/discord.js"
-  },
   "devDependencies": {
     "@types/node": "^12.7.2",
     "docgen": "github:dirigeants/docsgen",
